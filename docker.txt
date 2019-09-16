@@ -1,0 +1,116 @@
+Docker ,Docker Swarm and Kubernetes
+-------------------------------------------
+Docker:
+Editions CE,EE  stable an edge
+
+Install
+Docker Machine and Docker compose for Linux
+
+https://docs.docker.com
+https://hub.docker.com
+
+-------------------------------------------
+*containerization virtualizes operating system
+*VM's virtualizes Hardware.
+*Containers are portable
+*Containers are limited what resources they can access.
+*Containers are processes
+*Containers exists when process exists.
+
+
+Docker:
+
+docker CLI -- client
+docker Server-- Engine
+
+1.Verify docker setup
+
+docker version
+docker --version
+docker info
+docker
+docker <management command> <command>  (new format after 2016)
+
+2.Images and Container
+
+Docker container is a running instance of an image
+Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package.. ... Docker container is an isolated and secure application platform, but it can share and access to resources running in a different host or container.
+
+Docker image is a read-only template with instructions for creating a Docker container.
+
+3.docker container run --publish 80:80 nginx
+
+docker container run --publish <hostport>:<containerport> <image_name>
+
+four things Happens:
+ --downolad the nginx image
+ --start the container
+ --Expose port of conatiner
+ --route the traffic to container
+
+4.Run the container in back-ground or detached mode
+
+docker container run --publish <hostport>:<containerport> --detach <image_name>
+
+5.list the containers running
+
+docker ps(old way)
+docker container ls
+docker container ls -a (list containers executed on the container)
+
+ps aux(host machine)
+
+6.start or stop the container
+
+docker container start <container_id>
+docker container stop <container_id>
+
+7.container names
+
+docker container run --publish <hostport>:<containerport> --detach --name <container_name> <image_name>
+
+8.see logs
+
+docker container logs <container name /id>
+
+9.see process running inside the container
+
+docker container top <container id>
+
+note:nginx has one master process and several worker processes. The main purpose of the master process is to read and evaluate configuration, and maintain worker processes. Worker processes do actual processing of requests.
+
+10.remove container
+
+docker container rm <container id>
+docker container rm -f <container id> (removes forcefully)
+
+IMP :: When we run the container :internal processing
+
+ -->Looks for the image in image cache
+ -->then looks in docker remote reository (https://hub.docker.com)
+ -->download the latest version of the image
+ -->Create new container based based on the image
+ -->gives a virtual ip in the private network inside the docker engine
+ -->open port 80 on host machine and route to port 80 inside container
+ -->starts container by using CMD in imager dockerfile
+
+---------------------------------------------------------------------------------------------------------
+
+Docker CLI monitoring
+
+1. docker container top (process list in one container)
+2. docker container inspect (details of one container config)
+3. docker container stats (performenace stats like RAM,.Memory etc on all containers)
+
+----------------------------------------------------------------------------------------------------------
+
+Run containers ininteractive mode
+
+docker container run -it --name webproxy nginx bash
+
+docker container exec
+
+ 
+
+
+
