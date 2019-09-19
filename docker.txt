@@ -108,8 +108,171 @@ Run containers ininteractive mode
 
 docker container run -it --name webproxy nginx bash
 
-docker container exec
+docker container exec -it webproxy
 
+---------------------------------------------------------------------------------------------------------
+Docker Networking
+=================
+*docker containers and services can be connected with each other
+*containers and services don't need to aware where they are deployed.
+*containers and services can communicate ,wether docker host run on linux,windows,macOS or mix of two
+*this all possible beacuase of default drivers in the docker.	
+*Each container connected to virtual private network called "bridge"
+*Bridge : default network driver of the bridge
+*all containers can communicate each other on the same bridge with out -P(port)
+*Best practice to create network,example:
+  --> network "sql_pht_nwt" for mysql and php containers
+  --> network "mongo_nwt" for mongo and php containers
+*docker network is easy to plugged-in in container.
+*user is allowed to create multiple VPN
+*create multiple rules for single network.
+*can attach multiple containers to one network,and can attach single container to more than one network,or can no need o attach any network to the container.
+
+-->ifconfig eth0
+-->docker container inspect <container_id>
+     prints Json of all configurations..we can see ip address under .networksetting
+-->docker container inspect -f {{.networksettings.IPAddress}} <container_ID>
+     -f is for format string 
+--> docker container port <container_ID>
+
+*show all networks
+
+-->docker network ls
+    lists the all networks engine daemon knows about
+
+-->docker network -f drive=bridge
+   we can filter  the networks
+   to filter all bridge networks
+
+-->docker network ls --format "{{.ID}}:{{.Driver}}"
+   to find all network IDs and Drivers
+
+*Inspect any network
+--> docker network inspect <network_ID>
+    returns information about network in JSON format
+-->docker network create <name>
+    creates new network on host machine
+    by default it creates 'bridge'network
+-->docker network create -d bridge <name>
+   create a bridge network
+
+-->docker network connect network1 container1
+    connects network with container
+    after connect containers can communicate with each other in the same network
+-->docker network disconnect network1 container1
+   disconnect container with the network
+
+*** docker communicates with the names(DNS) instead of IP Address one another in the same network
+
+---------------------------------------------------------------------------------------------------------------------
+Docker Images:
+==============
+An Image is a combination of filesystem and parameters.Images contains the binaries and dependencies.
+
+--> docker images
+  list all images
+
+--> docker pull <image_name>
+   downolad image from hub.docker.com
+
+*Each image consists of series of layers.docker makes use of union file systems to combine these layers into a single image.
+*Union filesystems allow files and directories of seperate file system,known as branches.
+
+-->docker history <image_name>
+   show image layers
+   History command shows different layers,commands used for each layer and size of each image.
+
+--> docker inspect <image_name>
+   completed details of image
+
+Docker Tags:
+===========
+Tags are version of a image
+
+--> docker tag nginx:alpine nginx_loki:test
+    default it takes as 'latest' as tag
+
+Docker image upload on hub
+==========================
+
+-->docker login
+
+--> docker image push loki777m/<imagename>
+   pushes the image on hub
+
+-->docker logout
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+Dockerfile:
+===========
+
+*docker can build images by the commands provided in dockerfile
+
+-->docker build -t Imagename:Tagname <path of the dockerfile>
+   command to build image from dockerfile.
+
+docker file instructions:
+=========================
+
+*valid dockerfile must starts with FROM
+
+1.FROM : instruction initializes a new build stage and sets the base image for subsequent images.
+-->FROM <image>[:<tag]
+
+2.LABEL : added to image to organize by project,licensing information (takes in key value pair)
+ -->LABEL com.example.version="0.0.1-beta"
+ -->LABEL vendor1="Microsoft inc"
+
+3.RUN : will execute any commands in a new layer on top of the current image and commit the result.
+ eg: FROM ubuntu:14.04
+     RUN apt-get update
+     RUN apt-get install -y curl
+
+4.CMD : used to run the software contained by our image,along with any arguments.
+  --> CMD ["executable","parm1",parm2"]
+  *There can be only one CMD in dockerfile ,if there are more than one CMD ,last will take effect
+  *main purpose is to provide defaults for an executing container.
+
+5.EXPOSE :indicates the port on with container can listens for connections
+  -->EXPOSE <port>
+
+6.ENV :sets the environment variable <key> to the value <value>
+ 
+7.We can use ENV to update the PATH environment variable for the software your container installs.
+
+8.ADD : copies files\directories from the remote URLs from <src> and adds the them to the <dest> location
+ -->ADD <src> <dest>
+   eg: ADD home*  /mydir/ 
+
+9.VOLUME : used to expose any database storage area,configuration storage,files/folders created
+
+10.WORKDIR : working directory 
+
+11.COPY 
+
+-------------------------------------------------------------------------------------------------------
+
+Data Management:
+================
+*Container persistent data problem
+*Containers are immutable : once deploy never change ,only re deploy
+*Config change or version upgrade need redeploy.
+*By default all files craeted inside the container are stored on a writable container layer.
+*The data doesn't persist when that container no longer exists,and it can be difficult to get the data out of the container if another process needs it.
+
+Volumes and Bind mounts
+=======================
+
+
+
+
+ 
+
+
+
+
+ 
  
 
 
